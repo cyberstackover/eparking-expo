@@ -7,7 +7,10 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image
+  Image,
+  BackAndroid,
+  BackHandler,
+  Alert
 } from 'react-native';
 import { Container, 
          Header, 
@@ -23,6 +26,38 @@ import { Container,
 import LoginForm from './loginform';
 
 class login extends Component {
+
+  onButtonPress = () => {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+    // then navigate
+    navigate('Dashboard');
+  }
+  
+  handleBackButton = () => {
+   Alert.alert(
+       'Exit App',
+       'Exiting the application?', [{
+           text: 'Cancel',
+           onPress: () => console.log('Cancel Pressed'),
+           style: 'cancel'
+       }, {
+           text: 'OK',
+           onPress: () => BackHandler.exitApp()
+       }, ], {
+           cancelable: false
+       }
+    )
+    return true;
+  } 
+  
+  componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+  }
+  
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
   render() {
   	
     return (

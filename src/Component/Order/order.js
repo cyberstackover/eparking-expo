@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { AsyncStorage, FlatList, ActivityIndicator, TouchableHighlight } from 'react-native';
+import { AsyncStorage, FlatList, ActivityIndicator, TouchableHighlight,View,TextInput } from 'react-native';
 import { Container, Footer, FooterTab, Button, Header, Content, List, ListItem, Body, Item, Input, Left, Right, Icon,  Text, Title, Thumbnail } from 'native-base';
 import { StackNavigator } from 'react-navigation';
 import GlobalConfig from '../GlobalConfig'
@@ -19,12 +19,30 @@ class FeedItem extends React.PureComponent {
   };
   render() {
     const that = this;
-   
+    var compIcon;
+    if(this.props.data.NAME_STATUS=='Waiting Confirm Hanggar'){
+      compIcon = '#E2C347';
+    }else if(this.props.data.NAME_STATUS=='Waiting Response'){
+      compIcon = '#BF9939';
+    }else if(this.props.data.NAME_STATUS=='Waiting Preparation'){
+      compIcon = '#4A82F0';
+    }else if(this.props.data.NAME_STATUS=='Waiting Delivery'){
+      compIcon = '#8E64E1';
+    }else if(this.props.data.NAME_STATUS=='Waiting Validation MCC'){
+      compIcon = '#D145D1';
+    }else if(this.props.data.NAME_STATUS=='Complete'){
+      compIcon = '#40B984';
+    }else{
+      compIcon = '#cccccc';
+    }
+
     return (
       <List >
         <ListItem avatar>
-          <Left>   
-            <Thumbnail source={{ uri: 'https://flutter.io/images/flutter-mark-square-100.png' }} />
+        <Left style={{alignItems:'center',justifyContent:'center',padding:5,margin:0,width:40,height:40}}>
+			<View style={{alignItems:'center',justifyContent:'center',width:40,height:40,backgroundColor:compIcon,borderRadius:20}}>
+				<Icon style={{fontSize:25, width:25, color:'#ffffff',margin:0}} type='Feather' name='alert-circle' />
+			</View>
           </Left>
           <Body>
             <Text style={{fontSize:14, color:'#0187ec'}}>{this.props.data.REGISTRY_AIRCRAFT}/{this.props.data.NAME_AIRCRAFT_TYPE}/{this.props.data.NAME_HANGAR}/{this.props.data.NAME_LINE_HANGAR}</Text>
@@ -50,6 +68,7 @@ export default class order extends Component {
       jsonUrl: GlobalConfig.SERVERHOST+'/index.php/api/order/search',
       isLoading: true,
       dataResult: [],
+      isSearch:false,
 
     }
   }
@@ -97,6 +116,15 @@ export default class order extends Component {
     <FeedItem data={item}/> 
   );
 
+  _renderHeadTitle() {
+    if (this.state.isSearch){
+      return ([<TextInput placeholder="Search" style={{color:"black",backgroundColor:"white",width:200}}/>
+              ,<Icon name="ios-close" />])
+    }else{
+      return ([<Title>Parking Order</Title>,<Icon name="ios-search" />])
+    }
+  };
+
   render() {
     if (this.state.isLoading) {
       return (
@@ -106,6 +134,7 @@ export default class order extends Component {
       );
     }
     const { navigate } = this.props.navigation;
+    const compSearch = this._renderHeadTitle();
     thats = this;
     return (
       <Container>
@@ -118,12 +147,12 @@ export default class order extends Component {
               <Icon name="menu" />
             </Button>
           </Left>
-          <Body> 
-            <Title>Parking Order</Title>
+           <Body> 
+            {compSearch[0]}
           </Body>
           <Right>
-          <Button small transparent>
-            <Icon name="ios-search" />
+          <Button small transparent onPress={() =>this.setState({isSearch:!this.state.isSearch})}>
+            {compSearch[1]}
           </Button>
           <Button small transparent onPress={() => this.props.navigation.navigate('createOrderParking')}>
             <Icon name="add" /> 
@@ -166,4 +195,5 @@ export default class order extends Component {
     );
   }
 }
+
 

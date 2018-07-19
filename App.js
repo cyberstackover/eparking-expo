@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Image,ScrollView, SafeAreaView, Button } from 'react-native';
 import LoginScreen from './src/Component/Login/login';
 import DashboardScreen from './src/Component/Dashboard/dashboard';
+import HangarScreen from './src/Component/Dashboard/hangar';
+import detailOrderHangarScreen from './src/Component/Dashboard/detailOrderHangar';
 import OrderScreen from './src/Component/Order/order';
 import MasterScreen from './src/Component/Master/master';
 import detailOrderParkingScreen from './src/Component/Order/detailOrderParking';
@@ -56,6 +58,12 @@ const App = StackNavigator({
   },
   Dashoard:{
       screen: Beranda,
+  },
+  Hangar:{
+      screen: HangarScreen,
+  },
+  detailOrderHangar:{
+    screen: detailOrderHangarScreen,
   },
   Order:{
       screen: OrderScreen,

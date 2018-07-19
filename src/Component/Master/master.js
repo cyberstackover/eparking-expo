@@ -1,8 +1,8 @@
 'use strict';
 
 import React, { Component } from 'react'; 
-import { View,StyleSheet,AsyncStorage, Image} from 'react-native';
-import { Container, Card, CardItem, Footer, FooterTab, Button, Header, Content, List, ListItem, Body, Item, Input, Left, Right, Icon,  Text, Title, Thumbnail } from 'native-base';
+import { View,StyleSheet,AsyncStorage, Image, Select, Picker, BackHandler} from 'react-native';
+import { Container, Card, CardItem, Footer, FooterTab, Button, Header,Fab, Content, List, ListItem, Body, Item, Input, Left, Right, Icon,  Text, Title, Thumbnail } from 'native-base';
 import { StackNavigator } from 'react-navigation';
 
 class master extends Component  {
@@ -13,6 +13,10 @@ class master extends Component  {
     navigate('Login');
   }
   
+  exit_function = () => {
+    BackHandler.exitApp();
+  }
+
   render() {
     const { navigate } = this.props.navigation;
     return (
@@ -29,7 +33,12 @@ class master extends Component  {
           <Body>
             <Title>Master</Title>
           </Body>
-          <Right />
+          <Right>
+          <Button
+              transparent>
+              <Icon name="settings" />
+            </Button>
+          </Right>
         </Header>
         <View>
         <Image
@@ -42,7 +51,9 @@ class master extends Component  {
                 <Text>Sign Out</Text>
               </Button>
         <Content>
-          
+        <Button block info style={styles.footerBottom} onPress={this.exit_function}>
+                <Text>Exit</Text>
+              </Button>
         </Content>
         <Footer>
           <FooterTab style={{ backgroundColor: '#fff' }}>

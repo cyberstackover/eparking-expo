@@ -29,52 +29,52 @@ export default class createOrderParking extends Component {
                   }
                   that = this;  
   }
-  onValueChangePcs(value: string) {
+  onValueChangePcs(value) {
     this.setState({
       pcs_selected: value
     });
   }
-  onValueChangeUrgency(value: string) {
+  onValueChangeUrgency(value) {
     this.setState({
       urgency_selected: value
     });
   }
-  onValueChangeAt(value: string) {
+  onValueChangeAt(value) {
     this.setState({
       at_selected: value
     });
   }
-  onValueChangeRegistry(value: string) {
+  onValueChangeRegistry(value) {
     this.setState({
       registry_selected: value
     });
   }
-  onValueChangeEquipment(value: string) {
+  onValueChangeEquipment(value) {
     this.setState({
       equipment_selected: value
     });
   }
-  onValueChangeMaxTime(value: string) {
+  onValueChangeMaxTime(value) {
     this.setState({
       max_time_response_selected: value
     });
   }
-  onValueChangeStation(value: string) {
+  onValueChangeStation(value) {
     this.setState({
       station_selected: value
     });
   }
-  onValueChangeMt(value: string) {
+  onValueChangeMt(value) {
     this.setState({
       mt_selected: value
     });
   }
-  onValueChangeMfrom(value: string) {
+  onValueChangeMfrom(value) {
     this.setState({
       mfrom_selected: value
     });
   }
-  onValueChangeMto(value: string) {
+  onValueChangeMto(value) {
     this.setState({
       mto_selected: value
     });
