@@ -231,7 +231,7 @@ export default class order extends Component {
       return ([<TextInput placeholder="Search" style={{color:"black",backgroundColor:"white",width:200}}/>
               ,<Icon  style={{color:'#fff'}} name="ios-close" />])
     }else{
-      return ([<Title style={{color:'#fff'}}>Parking Order</Title>,<Icon style={{color:'#fff'}} name="ios-search" />])
+      return ([<Title style={{color:'#fff'}}>Planned Order Swift</Title>,<Icon style={{color:'#fff'}} name="ios-search" />])
     }
   };
 
@@ -307,16 +307,16 @@ export default class order extends Component {
               <Icon name={Platform.OS === 'ios' ? 'ios-apps' : 'apps'} style={{ color: '#808080' }}/>
               <Text style={{ color: '#808080' }}>Dashboard</Text>
             </Button>
-            <Button vertical active
+            <Button vertical 
             onPress={() => navigate("Order")} 
             >
-              <Icon active name={Platform.OS === 'ios' ? 'ios-clipboard' : 'ios-clipboard'}/>
+              <Icon  name={Platform.OS === 'ios' ? 'ios-clipboard' : 'ios-clipboard'}/>
               <Text>Order</Text>
             </Button>
-            <Button vertical 
+            <Button vertical active
             onPress={() => navigate("Swift")}
             >
-              <Icon  name={Platform.OS === 'ios' ? 'ios-folder-open' : 'folder-open'} style={{ color: '#808080' }}/>
+              <Icon  active name={Platform.OS === 'ios' ? 'ios-folder-open' : 'folder-open'} style={{ color: '#808080' }}/>
               <Text style={{ color: '#808080' }}>Swift</Text>
             </Button>
           </FooterTab>

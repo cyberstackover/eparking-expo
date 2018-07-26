@@ -41,7 +41,7 @@ export default class detailOrderHangar extends Component {
               'Accept': 'application/json',
               'Content-Type': 'application/json',
               'token': token
-            }
+            } 
        })
       .then((response) => response.json()).then((responseData) => {
         this.setState({
@@ -49,7 +49,8 @@ export default class detailOrderHangar extends Component {
         });
 		this.loadMovement(this.state.token);
       }).catch((error) => {
-        alert("Error Connection");
+        this.setState({isLoading: false});
+        alert("Order detail not found");
       }).done(); 
   }
   //Load Movement
@@ -58,7 +59,7 @@ export default class detailOrderHangar extends Component {
       method: 'GET',
       headers: {   
               'Accept': 'application/json',
-              'Content-Type': 'application/json',
+              'Content-Type': 'application/json', 
               'token': token
             }
        })
@@ -68,7 +69,8 @@ export default class detailOrderHangar extends Component {
         });
 		this.loadEquipment(this.state.token);
       }).catch((error) => {
-        alert("Error Connection");
+        this.setState({isLoading: false});
+        alert("Movement not found");
       }).done(); 
   }
   //Load Equipment
@@ -87,7 +89,8 @@ export default class detailOrderHangar extends Component {
           equipmentResult: responseData.response
         });
       }).catch((error) => {
-        alert("Error Connection");
+        this.setState({isLoading: false});
+        alert("Equipment not found");
       }).done(); 
   }
 	renderItemDetail(arrItems){
@@ -190,11 +193,11 @@ export default class detailOrderHangar extends Component {
             <Button
               transparent
               onPress={() => this.props.navigation.navigate("Hangar")}>
-              <Icon name="arrow-back" />
+              <Icon style={{ color: '#fff' }} name="arrow-back" />
             </Button>
           </Left>
           <Body>
-            <Title>Detail Order</Title>
+            <Title style={{ color: '#fff' }}>Detail Order</Title>
           </Body>
           <Right /> 
         </Header>

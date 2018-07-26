@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Container, Header, Content, Tab, Tabs, Left, Button, TabHeading, Body,Text,Title, ScrollableTab ,Card, CardItem, Icon, Right, Footer,FooterTab } from 'native-base';
-import { View,StyleSheet, Image, TouchableHighlight, BackAndroid, BackHandler, Alert} from 'react-native';
+import { Platform, View,StyleSheet, Image, TouchableHighlight, BackAndroid, BackHandler, Alert, AsyncStorage} from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid';
+import SVGallhangar from './svgallhanggar';
 import Hangar1 from './hanggar1';
 import Hangar2 from './hanggar2';
 import Hangar3 from './hanggar3';
@@ -19,7 +20,28 @@ export default class dashboard extends Component {
     // then navigate
     navigate('Dashboard');
   }
-  
+
+  _handleLogOut  = (navigate) => {
+    Alert.alert(
+      'Log out',
+      'Logout your account ?', [{
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel'
+      }, {
+          text: 'OK',
+          onPress: () =>  {
+            AsyncStorage.removeItem('tokenUser');
+            Alert.alert('Logout Account','You have been logged out.',[],{});
+            navigate('Login');
+          }
+      }, ], {
+          cancelable: false
+      }
+   )
+   return true;
+  }
+
   handleBackButton = () => {
    Alert.alert(
        'Exit App',
@@ -36,7 +58,7 @@ export default class dashboard extends Component {
     )
     return true;
   } 
-  
+
   componentDidMount() {
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   }
@@ -45,6 +67,7 @@ export default class dashboard extends Component {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
   }
 
+			// onPress={() => navigate("Hangar")}
   render() {
     const { navigate } = this.props.navigation;
     return (
@@ -55,28 +78,25 @@ export default class dashboard extends Component {
             <Button
               transparent
               onPress={() => navigate("DrawerOpen")}>
-              <Icon name="menu" />
+              <Icon style={{color:'#fff'}} name={Platform.OS === 'ios' ? 'ios-menu' : 'menu'}/>
             </Button>
           </Left>
           <Body>
-            <Title>eParking GMF</Title>
+            <Title style={{color:'#fff'}}>Aircraft Hangar Parking</Title>
           </Body>
           <Right>
-          <Button transparent>
-              <Icon name='search' />
-            </Button>
-            <Button transparent>
-              <Icon name='more' />
+         
+            <Button transparent onPress={() => this._handleLogOut(navigate)}>
+              <Icon style={{color:'#fff'}} name='log-out' />
             </Button>
           </Right>
+
         </Header>
 		<Grid style={styles.distance}>
-      <TouchableHighlight onPress={() => navigate("Hangar")}>
-        <Image style={{width: 440, height: 250}}
-                source={require('../../Images/dashboard.png')}      
-              />
-               </TouchableHighlight>
-            <Row style={{ backgroundColor: '#ffffff', height: '60%' }}>
+      <Row style={{ backgroundColor: 'green', height: '40%',padding:0 }}>
+        <SVGallhangar navigation={this.props.navigation} />
+      </Row>
+      <Row style={{ backgroundColor: '#ffffff', height: '60%' }}>
 				<Tabs renderTabBar={()=> <ScrollableTab style={{backgroundColor: '#04245B'}} /> } tabBarPosition="top" initialPage={this.state.initialPage} page={this.state.activeTab}>
 				  <Tab heading="Hangar 1" tabStyle={{backgroundColor: '#04245B'}} textStyle={{color: '#fff'}} activeTabStyle={{backgroundColor: '#0A3682'}} activeTextStyle={{color: '#fff', fontWeight: 'normal'}}>
 						<Hangar1 data={this.props.navigation} />
@@ -94,25 +114,25 @@ export default class dashboard extends Component {
 			</Row>
 		</Grid>
       
-        <Footer>
+    <Footer>
           <FooterTab style={{ backgroundColor: '#fff' }}>
             <Button vertical active
-            onPress={() => navigate("Dashboard")}
+             onPress={() => navigate("Dashboard")}
             >
-              <Icon active name="apps"/>
-              <Text>Dashboard</Text>
-            </Button>  
-            <Button vertical 
-            onPress={() => navigate("Order")}
+              <Icon name={Platform.OS === 'ios' ? 'ios-apps' : 'apps'} style={{ color: '#808080' }}/>
+              <Text style={{ color: '#808080' }}>Dashboard</Text>
+            </Button>
+            <Button vertical
+            onPress={() => navigate("Order")} 
             >
-              <Icon style={{ color: '#808080' }} name="ios-clipboard"/>
-              <Text style={{ color: '#808080' }}>Order</Text>
+              <Icon active name={Platform.OS === 'ios' ? 'ios-clipboard' : 'apps'}/>
+              <Text>Order</Text>
             </Button>
             <Button vertical 
-            onPress={() => navigate("Master")}
+            onPress={() => navigate("Swift")}
             >
-              <Icon style={{ color: '#808080' }} name="ios-folder-open" />
-              <Text style={{ color: '#808080' }}>Master</Text>
+              <Icon  name={Platform.OS === 'ios' ? 'ios-folder-open' : 'folder-open'} style={{ color: '#808080' }}/>
+              <Text style={{ color: '#808080' }}>Swift</Text>
             </Button>
           </FooterTab>
         </Footer>
@@ -137,4 +157,4 @@ const styles = StyleSheet.create({
   },
 });
 
-GLOBAL.XMLHttpRequest = GLOBAL.originalXMLHttpRequest || GLOBAL.XMLHttpRequest;
+// GLOBAL.XMLHttpRequest = GLOBAL.originalXMLHttpRequest || GLOBAL.XMLHttpRequest;

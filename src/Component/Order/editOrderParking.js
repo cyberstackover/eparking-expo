@@ -7,29 +7,26 @@ import { StackNavigator } from 'react-navigation';
 import GlobalConfig from '../GlobalConfig'
 
 var fullwidth = Dimensions.get('window').width-10;
-export default class createOrderParking extends Component {
+export default class editOrderParking extends Component {
     constructor(props) {
         super(props);
         this.state = {
             jsonUrl: GlobalConfig.SERVERHOST+'/index.php/api/',
             isLoading: true,
-            type_pcs:"2", 
             // Get Data
+            dataResult: [],
             listMaintenanceType: [],
             listMovementType: [],
             listEquipment: [],
             listUrgency: [],
             listHangar: [],
             listAircraftType: [],
-            listPcs: [],
             // Post Data
-            id_pcs:'', //Ambil dari mana?
-            no_order:'', //Ambil dari mana?
+            no_order:'1',
             id_aircraft:'',
-            id_slot_line:'1', //Ambil dari mana?
             id_maintenance_type:'',
-            no_id_line:'', 
-            id_line_hangar:'', 
+            no_id_line:'1',
+            id_line_hangar:'1',
             id_movement_type:'',
             id_urgency:'',
             id_equipment:'',
@@ -40,6 +37,7 @@ export default class createOrderParking extends Component {
             id_movement_from:'',
             id_movement_to:'',
             note_order:'',
+            id_order:'', 
             user_id:''
         } 
         this.setResponseTime = this.setResponseTime.bind(this);
@@ -78,24 +76,8 @@ export default class createOrderParking extends Component {
                 listMaintenanceType: responseData.response
             });
         }).catch((error) => { 
+            this.setState({isLoading: false});
             alert("Maintenance Type Not Found"); 
-        }).done(); 
-        
-        // PCS
-        await fetch(this.state.jsonUrl+'pcs/listpcs',{ 
-            method: 'GET',
-            headers: {   
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'token': token
-                    }
-        })
-        .then((response) => response.json()).then((responseData) => {
-            this.setState({
-                listPcs: responseData.response
-            });
-        }).catch((error) => { 
-            alert("PCS Not Found"); 
         }).done(); 
         
         // Equipment Type
@@ -112,6 +94,7 @@ export default class createOrderParking extends Component {
                 listEquipment: responseData.response
             });
         }).catch((error) => {
+            this.setState({isLoading: false});
             alert("Equipment Not Found");
         }).done(); 
         
@@ -129,6 +112,7 @@ export default class createOrderParking extends Component {
                 listAircraftType: responseData.response
             });
         }).catch((error) => {
+            this.setState({isLoading: false});
             alert("Aircraft Type Not Found");
         }).done(); 
          
@@ -146,6 +130,7 @@ export default class createOrderParking extends Component {
                 listMovementType: responseData.response
             });  
         }).catch((error) => {
+            this.setState({isLoading: false});
             alert("Movement Type Not Found");
         }).done(); 
         
@@ -163,6 +148,7 @@ export default class createOrderParking extends Component {
                 listUrgency: responseData.response
             });
         }).catch((error) => {
+            this.setState({isLoading: false});
             alert("Urgency Not Found");
         }).done(); 
 
@@ -177,17 +163,50 @@ export default class createOrderParking extends Component {
         })
         .then((response) => response.json())
         .then((responseData) => {
-            this.setState({ 
+            this.setState({
                 listHangar: responseData.response
             });
         }).catch((error) => { 
+            this.setState({isLoading: false});
             alert("Line Hanggar Not Found");
+        }).done(); 
+
+        //Detail
+        await fetch(this.state.jsonUrl+'order/detail/'+this.state.orderId,{ 
+            method: 'GET',
+            headers: {   
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'token': token
+            }
+        })
+        .then((response) => response.json()).then((responseData) => { 
+            this.setState({ 
+                isLoading: false,
+                dataResult: responseData.response,
+                id_aircraft:responseData.response[0].ID_AIRCRAFT_TYPE,
+                id_maintenance_type:responseData.response[0].ID_MAINTENANCE_TYPE,
+                id_movement_type:responseData.response[0].ID_MOVEMENT_TYPE,
+                id_urgency:responseData.response[0].ID_URGENCY,
+                id_equipment:responseData.response[0].ID_EQUIPMENT,
+                swo_order:responseData.response[0].SWO_ORDER,
+                time_response_order:responseData.response[0].TIME_RESPONSE_ORDER,
+                date_start:responseData.response[0].DATE_START_ORDER,
+                date_end:responseData.response[0].DATE_END_ORDER,
+                id_movement_from:responseData.response[0].MOVEMENT_FROM_ID,
+                id_movement_to:responseData.response[0].MOVEMENT_TO_ID,
+                note_order:responseData.response[0].NOTE_ORDER,
+                id_order:responseData.response[0].ID_ORDER,  
+            });
+        }).catch((error) => {
+            this.setState({isLoading: false});
+            alert("Error Connection");
         }).done(); 
     }
     
     //Post Data
-    async postData(){    
-        await fetch(this.state.jsonUrl+'Order/add',{
+    async postData(){ 
+        await fetch(this.state.jsonUrl+'Order/update',{
             method: 'POST',
             headers: {   
                     'Accept': 'application/json',
@@ -195,13 +214,11 @@ export default class createOrderParking extends Component {
                     'token': this.state.token
                     },
             body: JSON.stringify({ 
-                id_pcs: this.state.id_pcs, //Ambil dari mana?
                 no_order: this.state.no_order, //Ambil dari mana?
                 id_aircraft: this.state.id_aircraft,
                 id_maintenance_type: this.state.id_maintenance_type,
-                id_slot_line: this.state.id_slot_line, //Ambil dari mana?
-                no_id_line: this.state.no_id_line, 
-                id_line_hangar:this.state.no_id_line,
+                no_id_line: this.state.no_id_line, //Ambil dari mana?
+                id_line_hangar:this.state.no_id_line, //Ambil dari mana?
                 id_movement_type: this.state.id_movement_type,
                 id_urgency: this.state.id_urgency,
                 id_equipment: this.state.id_equipment, 
@@ -212,79 +229,19 @@ export default class createOrderParking extends Component {
                 movement_from: this.state.id_movement_from,
                 movement_to: this.state.id_movement_to,
                 note_order: this.state.note_order,
-                user_id: this.state.user_id, 
+                id_order: this.state.id_order,
+                user_id: this.state.user_id,
             }) 
         })
         .then((response) => response.json())
         .then((responseData) => {
             if (responseData.status == true) {
-                this.props.navigation.navigate('Order'); 
+                this.props.navigation.navigate('detailOrderParking'); 
             }else{
                alert(responseData.response);
             }  
         }).done(); 
     } 
-
-    // Onchange PCS Picker 
-    onValueChangeTypePcs(value) {   
-        this.setState({
-            type_pcs:value
-        });
-        if(value=="2"){   
-            this.setState({ 
-                id_aircraft:'',
-                id_maintenance_type:'',
-                id_movement_type:'',
-                id_urgency:'',
-                id_equipment:'',
-                swo_order:'',
-                time_response_order:'',
-                date_start:'',
-                date_end:'',
-                id_movement_from:'', 
-                id_movement_to:'',
-                note_order:'',
-                id_order:'', 
-            })
-        }
-    }
-
-    // Onchange PCS Picker 
-    onValueChangeIdPcs(value) {  
-        this.setState({
-            id_pcs:value
-        });
-        if(value!=""){
-            // PCS 
-            fetch(this.state.jsonUrl+'pcs/listpcs/'+value,{ 
-                method: 'GET',
-                headers: {   
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'token': this.state.token
-                        }
-            })
-            .then((response) => response.json()).then((responseData) => {
-                this.setState({ 
-                    id_aircraft:responseData.response[0].ID_AIRCRAFT_TYPE,
-                    id_maintenance_type:responseData.response[0].ID_MAINTENANCE_TYPE,
-                    id_movement_type:responseData.response[0].ID_MOVEMENT_TYPE,
-                    id_urgency:responseData.response[0].ID_URGENCY,
-                    id_equipment:responseData.response[0].ID_EQUIPMENT,
-                    swo_order:responseData.response[0].SWO_ORDER,
-                    time_response_order:responseData.response[0].TIME_RESPONSE_ORDER,
-                    date_start:responseData.response[0].DATE_START_ORDER,
-                    date_end:responseData.response[0].DATE_END_ORDER,
-                    id_movement_from:responseData.response[0].MOVEMENT_FROM_ID, 
-                    id_movement_to:responseData.response[0].MOVEMENT_TO_ID,
-                    note_order:responseData.response[0].NOTE_ORDER,
-                    id_order:responseData.response[0].ID_ORDER, 
-                })
-            }).catch((error) => { 
-                alert("PCS Not Found"); 
-            }).done();
-        }   
-    }
 
     // Onchange Urgency Picker 
     onValueChangeIdUrgency(value) {  
@@ -395,12 +352,15 @@ export default class createOrderParking extends Component {
         this.setState({ date_end : year+'-'+month+'-'+dt+' '+hour+':'+minutes+':'+seconds });
     }
 
-  render() { 
-    //PCS Picker Item
-    let listPcsItem = this.state.listPcs.map( (s, i) => {
-        return <Picker.Item key={i} value={s.ID_ORDER} label={'PCS - '+s.ID_ORDER} />
-    });
-    
+  render() {
+    if (this.state.isLoading) {
+      return (
+        <Body style={{flex: 1}}>
+          <ActivityIndicator />
+        </Body>
+      );
+    }
+
     //Aircraft Picker Item
     let listAircraftTypeItem = this.state.listAircraftType.map( (s, i) => {
         return <Picker.Item key={i} value={s.ID_AIRCRAFT_TYPE} label={s.NAME_AIRCRAFT_TYPE} />
@@ -435,7 +395,8 @@ export default class createOrderParking extends Component {
     let listMovementToItem = this.state.listHangar.map( (s, i) => {
         return <Picker.Item key={i} value={s.ID_LINE_HANGAR} label={s.LINE_HANGAR_FORMAT} />
     });
-    const { navigate } = this.props.navigation;  
+
+    const { navigate } = this.props.navigation; 
     return (
         <Container>
             <Header style={{ backgroundColor: '#04245b' }}
@@ -443,53 +404,20 @@ export default class createOrderParking extends Component {
             <Left>
                 <Button
                 transparent
-                onPress={() => this.props.navigation.navigate("Order")}>
+                onPress={() => this.props.navigation.navigate("detailOrderParking")}>
                 <Icon style={{ color: '#fff' }} name="arrow-back" />
                 </Button>
             </Left>
             <Body> 
-                <Title style={{ color: '#fff' }}>Create Order Parking</Title>
+                <Title style={{ color: '#fff' }}>Edit Order Parking</Title>
             </Body>
             <Right /> 
             </Header>
             <Content>
                 <Form style={{width:'96%'}}>
                     <Item stackedLabel> 
-                        <Label>PCS</Label>
-                        <Picker 
-                            mode="dropdown"
-                            iosIcon={<Icon name="ios-arrow-down-outline" />}
-                            style={{ width: fullwidth }}
-                            placeholder="Select PCS"
-                            placeholderStyle={{ color: "#bfc6ea" }} 
-                            placeholderIconColor="#007aff"
-                            selectedValue={this.state.type_pcs}
-                            onValueChange={this.onValueChangeTypePcs.bind(this)}
-                            >
-                            <Picker.Item label="PCS" value="1" />
-                            <Picker.Item label="Non PCS" value="2" />
-                        </Picker> 
-                    </Item> 
-                    { (this.state.type_pcs=="1") ? <Item stackedLabel>     
-                            <Label>PCS LIST *</Label>
-                            <Picker  
-                                mode="dropdown"
-                                iosIcon={<Icon name="ios-arrow-down-outline" />}
-                                style={{ width: fullwidth }}
-                                placeholder="Select Aircraft Type"
-                                placeholderStyle={{ color: "#bfc6ea" }} 
-                                placeholderIconColor="#007aff"
-                                selectedValue={this.state.id_pcs}
-                                onValueChange={this.onValueChangeIdPcs.bind(this)}
-                                >
-                                {listPcsItem}
-                            </Picker> 
-                        </Item>
-                        : null
-                    }
-                    <Item stackedLabel> 
-                        <Label>URGENCY *</Label>
-                        <Picker 
+                        <Label>URGENCY</Label>
+                        <Picker
                             mode="dropdown"
                             iosIcon={<Icon name="ios-arrow-down-outline" />}
                             style={{ width: fullwidth }}
@@ -498,7 +426,7 @@ export default class createOrderParking extends Component {
                             placeholderIconColor="#007aff"
                             selectedValue={this.state.id_urgency}
                             onValueChange={this.onValueChangeIdUrgency.bind(this)}
-                            > 
+                            >
                             {listUrgencyItem}
                         </Picker> 
                     </Item>
@@ -533,7 +461,7 @@ export default class createOrderParking extends Component {
                         </Picker> 
                     </Item> 
                     <Item stackedLabel>
-                        <Label>EQUIPMENT *</Label>
+                        <Label>EQUIPMENT</Label>
                         <Picker 
                             mode="dropdown"
                             iosIcon={<Icon name="ios-arrow-down-outline" />}
@@ -597,16 +525,15 @@ export default class createOrderParking extends Component {
                         <Input value={this.state.swo_order} onChangeText={(text) => this.setState({swo_order:text})}/>
                     </Item>
                     <Item stackedLabel>
-                        <Label>MAX TIME RESPONSE *</Label>
+                        <Label>TIME RESPONSE ORDER</Label>
                         <DatePicker
-                            defaultDate={new Date()}  
+                            defaultDate={new Date(this.state.time_response_order)} 
                             locale={"en"} 
                             timeZoneOffsetInMinutes={undefined}
                             modalTransparent={false}
                             animationType={"fade"}
                             androidMode={"default"}
-                            placeHolderText={"Select Date"}
-                            style={{ width: fullwidth }}
+                            placeHolderText={this.state.time_response_order}
                             textStyle={{ color: "black" }}
                             placeHolderTextStyle={{ color: "black" }}
                             onDateChange={this.setResponseTime}
@@ -615,14 +542,13 @@ export default class createOrderParking extends Component {
                     <Item stackedLabel>
                         <Label>START DATE PLAN</Label>
                         <DatePicker
-                            defaultDate={new Date('2018-07-17 00:00:00')} 
+                            defaultDate={new Date(this.state.date_start)} 
                             locale={"en"} 
                             timeZoneOffsetInMinutes={undefined}
                             modalTransparent={false}
                             animationType={"fade"}
                             androidMode={"default"}
-                            placeHolderText={"Select Date"}
-                            style={{ width: fullwidth }}
+                            placeHolderText={this.state.date_start}
                             textStyle={{ color: "black" }}
                             placeHolderTextStyle={{ color: "black" }}
                             onDateChange={this.setStartDate}
@@ -631,14 +557,13 @@ export default class createOrderParking extends Component {
                     <Item stackedLabel>
                         <Label>END DATE PLAN</Label> 
                         <DatePicker
-                            defaultDate={new Date('2018-07-17 00:00:00')} 
+                            defaultDate={new Date(this.state.date_end)} 
                             locale={"en"} 
                             timeZoneOffsetInMinutes={undefined}
                             modalTransparent={false}
                             animationType={"fade"}
                             androidMode={"default"}
-                            placeHolderText={"Select Date"}
-                            style={{ width: fullwidth }}
+                            placeHolderText={this.state.date_end}
                             textStyle={{ color: "black" }}
                             placeHolderTextStyle={{ color: "black" }}
                             onDateChange={this.setEndDate}
@@ -650,7 +575,7 @@ export default class createOrderParking extends Component {
                     </Item>
                 </Form> 	
                 <Button block style={{ margin: 15, marginTop: 50 , backgroundColor:"green"}} onPress={() => this.postData()}>
-                    <Text>Create</Text>
+                    <Text>Edit</Text>
                 </Button>
             </Content>
       </Container>

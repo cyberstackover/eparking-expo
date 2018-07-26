@@ -10,16 +10,26 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { Container, Header, Content, Item, Input, Form, Thumbnail, Label, Button, Text} from 'native-base';
-import GlobalConfig from '../GlobalConfig'
+import GlobalConfig from '../GlobalConfig';
+
+var jwtDecode = require('jwt-decode');
+
 class loginform extends Component {
     constructor() {
-    super();
-    this.state = {
-      username : '', 
-      password : '',
-      success : ''
+      super(); 
+      this.state = {
+        username : 'abdul',  
+        password : 'abdul',
+        success : ''
+      }
     }
-  }
+
+    // Decode
+    parseJwt(token) {
+      var base64Url = token.split('.')[1];
+      var base64 = base64Url.replace('-', '+').replace('_', '/');
+      return JSON.parse(window.atob(base64));
+    };
 
     handleClick(){
       fetch(GlobalConfig.SERVERHOST+'/index.php/api/auth', {
@@ -39,10 +49,13 @@ class loginform extends Component {
               //  alert(JSON.stringify(response));
                 if (response.status == true) {
                    AsyncStorage.setItem('tokenUser', response.response).then(() => { 
-                    this.props.data.navigate('Dashboard');
+                    // Save User Data
+                      AsyncStorage.setItem('dataUser', JSON.stringify(jwtDecode(response.response))).then(() => { 
+                        this.props.data.navigate('Dashboard');
+                      })
                   })
 
-                }else{
+                }else{ 
                   alert("Gagal Login");
                 }
 
@@ -60,10 +73,10 @@ class loginform extends Component {
           
             <Form style={styles.formLogin}>
             <Item>
-              <Input style={styles.st_inputfnt} placeholder='Username' placeholderTextColor='white' onChangeText={(text) => this.setState({username:text})}/>
+              <Input value={this.state.username} style={styles.st_inputfnt} placeholder='Username' placeholderTextColor='white' onChangeText={(text) => this.setState({username:text})}/>
             </Item>
             <Item>
-              <Input style={styles.st_inputfnt} placeholder='Password' placeholderTextColor='white' secureTextEntry={true} onChangeText={(text) => this.setState({password:text})}/>
+              <Input value={this.state.password} style={styles.st_inputfnt} placeholder='Password' placeholderTextColor='white' secureTextEntry={true} onChangeText={(text) => this.setState({password:text})}/>
             </Item>
           </Form>
           
@@ -117,8 +130,6 @@ const styles = StyleSheet.create({
       color: 'white',
   }
 });
-
-
 
 export default loginform;
 GLOBAL.XMLHttpRequest = GLOBAL.originalXMLHttpRequest || GLOBAL.XMLHttpRequest;

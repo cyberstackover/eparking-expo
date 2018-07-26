@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { AsyncStorage, FlatList, ActivityIndicator, TouchableHighlight, View } from 'react-native';	
 import { Container, Footer, FooterTab, Button, Header, Content, List, ListItem, Body, Item, Input, Left, Right, Icon,  Text, Title, Thumbnail } from 'native-base';
 import { StackNavigator } from 'react-navigation';
-import GlobalConfig from '../GlobalConfig'
+import GlobalConfig from '../GlobalConfig';
 
 var thats;
 
@@ -49,7 +49,7 @@ class FeedItem extends React.PureComponent {
           </Body>
           <Right style={{alignItems:'center',justifyContent:'center'}}>
 			<Icon  style={{fontSize:20, color:'#666'}} type='MaterialIcons' name='keyboard-arrow-right' />
-          </Right> 
+          </Right>
         </ListItem>
     )
   }
